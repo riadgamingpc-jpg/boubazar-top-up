@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RS Arena Tournament System</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f9; padding: 10px; }
+        .card { background: #fff; padding: 15px; border-radius: 15px; max-width: 450px; margin: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .header { background: #512da8; color: white; padding: 15px; text-align: center; border-radius: 10px; margin-bottom: 15px; }
+        .match-card { border-bottom: 1px solid #eee; padding: 10px 0; display: flex; justify-content: space-between; align-items: center; }
+        .fee { color: #d81b60; font-weight: bold; }
+        .btn-copy { background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        .join-box { background: #e8f5e9; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        input { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button.btn-submit { background: #25d366; color: white; width: 100%; padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header">
+        <h3>RS Arena</h3>
+        <p>বিকাশ/নগদ: 01851634841</p>
+    </div>
+
+    <div class="join-box">
+        <h4>জয়েন করতে নাম ও নম্বর দিন:</h4>
+        <input type="text" id="uName" placeholder="আপনার নাম">
+        <input type="number" id="uPhone" placeholder="আপনার হোয়াটসঅ্যাপ নম্বর">
+        <select id="mSelect" style="width:100%; padding:8px; margin:5px 0;">
+            <option value="">ম্যাচ নির্বাচন করুন...</option>
+        </select>
+        <button class="btn-submit" onclick="sendJoinRequest()">হোয়াটসঅ্যাপে পাঠান</button>
+    </div>
+
+    <div id="matchList"></div>
+</div>
+
+<script>
+    let mSelect = document.getElementById('mSelect');
+    let matchList = document.getElementById('matchList');
+
+    for (let i = 1; i <= 100; i++) {
+        let fee = (i <= 10) ? 0 : (i <= 28 ? 20 : (i <= 46 ? 40 : (i <= 64 ? 60 : (i <= 82 ? 70 : 90)));
+        let feeText = (fee == 0) ? 'ফ্রি' : fee + ' TK';
+        
+        // সিলেক্ট অপশন যোগ করা
+        mSelect.innerHTML += `<option value="Match #${i}">Match #${i} (${feeText})</option>`;
+        
+        // ম্যাচ কার্ড যোগ করা
+        matchList.innerHTML += `
+        <div class="match-card">
+            <div><b>Match #${i}</b><br><span class="fee">${feeText}</span></div>
+            <button class="btn-copy" onclick="copyInfo(${i}, '${feeText}')">কপি</button>
+        </div>`;
+    }
+
+    // জয়েন রিকোয়েস্ট (হোয়াটসঅ্যাপ)
+    function sendJoinRequest() {
+        let name = document.getElementById('uName').value;
+        let phone = document.getElementById('uPhone').value;
+        let match = document.getElementById('mSelect').value;
+        
+        if(name && phone && match) {
+            let url = `https://wa.me/8801851634841?text=হ্যালো, আমি ${name}। আমার নম্বর ${phone}, আমি ${match}-এ জয়েন করতে চাই।`;
+            window.open(url, '_blank');
+        } else {
+            alert("সব ঘর পূরণ করুন!");
+        }
+    }
+
+    // মেসেজ কপি
+    function copyInfo(id, fee) {
+        let msg = `RS Arena: ম্যাচ #${id} শুরু হচ্ছে! এন্ট্রি ফি: ${fee}। রুম আইডি: [এখানে বসান], পাসওয়ার্ড: 1234।`;
+        navigator.clipboard.writeText(msg);
+        alert("মেসেজ কপি হয়েছে!");
+    }
+</script>
+
+</body>
+</html>
