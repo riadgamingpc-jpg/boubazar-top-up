@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RS Arena - Tournament Admin Panel</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f9; padding: 15px; }
+        .card { background: #fff; padding: 20px; border-radius: 15px; max-width: 500px; margin: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .header-box { text-align: center; padding: 15px; background: #512da8; color: white; border-radius: 10px; margin-bottom: 20px; }
+        .match-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
+        .btn-msg { background: #25d366; color: white; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .fee-tag { font-weight: bold; color: #d81b60; }
+        .copy-all-btn { background: #007bff; color: white; padding: 10px; width: 100%; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 20px; }
+        .user-section { background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="header-box">
+        <h2>RS Arena Admin</h2>
+        <p>বিকাশ/নগদ: <b>01851634841</b></p>
+    </div>
+
+    <div class="user-section">
+        <h3>ইউজার কন্ট্রোল</h3>
+        <input type="text" id="uName" placeholder="নাম" style="padding:8px; width:40%;">
+        <input type="number" id="uPhone" placeholder="হোয়াটসঅ্যাপ নম্বর" style="padding:8px; width:45%;">
+        <button onclick="addUser()" style="padding:8px;">+</button>
+        <p>মোট ইউজার: <span id="uCount">0</span></p>
+        <button class="copy-all-btn" onclick="copyAllNumbers()">সব ইউজারের নম্বর কপি করুন</button>
+    </div>
+
+    <h3>ম্যাচ শিডিউল (১০০টি)</h3>
+    <div id="matchList"></div>
+</div>
+
+<script>
+    let users = [];
+    let times = ["6:00 AM", "7:00 AM", "8:00 AM", "10:00 AM", "2:00 PM", "3:00 PM"];
+    let container = document.getElementById('matchList');
+
+    // ১০০টি ম্যাচ জেনারেট করা
+    for (let i = 1; i <= 100; i++) {
+        let fee;
+        if (i <= 10) fee = 0;
+        else if (i <= 28) fee = 20;
+        else if (i <= 46) fee = 40;
+        else if (i <= 64) fee = 60;
+        else if (i <= 82) fee = 70;
+        else fee = 90;
+
+        let feeText = (fee === 0) ? 'ফ্রি' : fee + ' TK';
+        let time = times[(i - 1) % 6];
+        
+        container.innerHTML += `
+        <div class="match-row">
+            <div>
+                <b>Match #${i}</b> - ফি: <span class="fee-tag">${feeText}</span><br>
+                <small>সময়: ${time}</small>
+            </div>
+            <button class="btn-msg" onclick="copyMatchMsg(${i}, '${time}', '${feeText}')">কপি</button>
+        </div>`;
+    }
+
+    // ইউজার যোগ করার ফাংশন
+    function addUser() {
+        let name = document.getElementById('uName').value;
+        let phone = document.getElementById('uPhone').value;
+        if(name && phone) {
+            users.push({name, phone});
+            document.getElementById('uCount').innerText = users.length;
+            document.getElementById('uName').value = "";
+            document.getElementById('uPhone').value = "";
+        }
+    }
+
+    // সব নম্বর কপি
+    function copyAllNumbers() {
+        let numbers = users.map(u => u.phone).join(", ");
+        navigator.clipboard.writeText(numbers);
+        alert("সব নম্বর কপি হয়েছে! হোয়াটসঅ্যাপ ব্রডকাস্টে পেস্ট করুন।");
+    }
+
+    // নির্দিষ্ট ম্যাচের মেসেজ কপি
+    function copyMatchMsg(id, time, fee) {
+        let msg = `RS Arena: ম্যাচ #${id} শুরু হচ্ছে! এন্ট্রি ফি: ${fee}। সময়: ${time}। রুম আইডি: [এখানে বসান], পাসওয়ার্ড: 1234।`;
+        navigator.clipboard.writeText(msg);
+        alert("ম্যাচ #" + id + "-এর তথ্য কপি হয়েছে!");
+    }
+</script>
+
+</body>
+</html>
