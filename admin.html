@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>RS Arena - Admin Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f9; padding: 20px; }
+        .card { background: #fff; padding: 20px; border-radius: 15px; max-width: 600px; margin: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .match-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
+        .btn-msg { background: #25d366; color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .input-group { margin-bottom: 20px; }
+        input { padding: 10px; width: 45%; border: 1px solid #ddd; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>RS Arena - ১০০ ম্যাচ কন্ট্রোল</h2>
+    
+    <div class="input-group">
+        <input type="text" id="uName" placeholder="ইউজার নাম">
+        <input type="number" id="uPhone" placeholder="হোয়াটসঅ্যাপ নম্বর">
+        <button onclick="addUser()" style="padding: 10px; background: #512da8; color: white; border: none; border-radius: 5px;">ইউজার যোগ করুন</button>
+    </div>
+
+    <p>মোট ইউজার: <strong><span id="uCount">0</span></strong></p>
+    <button onclick="copyNumbers()" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; margin-bottom: 20px;">৪৮+ ইউজারের নম্বর কপি করুন</button>
+
+    <div id="matchList"></div>
+</div>
+
+<script>
+    let users = [];
+    let times = ["6:00 AM", "7:00 AM", "8:00 AM", "10:00 AM", "2:00 PM", "3:00 PM"];
+    let container = document.getElementById('matchList');
+
+    // ১০০টি ম্যাচ জেনারেট করা
+    for (let i = 1; i <= 100; i++) {
+        let time = times[(i - 1) % 6];
+        container.innerHTML += `
+        <div class="match-row">
+            <span><b>Match #${i}</b> (${time})</span>
+            <button class="btn-msg" onclick="copyMatchMsg(${i}, '${time}')">মেসেজ কপি</button>
+        </div>`;
+    }
+
+    function addUser() {
+        let name = document.getElementById('uName').value;
+        let phone = document.getElementById('uPhone').value;
+        if(name && phone) {
+            users.push({name, phone});
+            document.getElementById('uCount').innerText = users.length;
+            document.getElementById('uName').value = "";
+            document.getElementById('uPhone').value = "";
+        }
+    }
+
+    function copyNumbers() {
+        if(users.length === 0) { alert("ইউজার নেই!"); return; }
+        let numbers = users.map(u => u.phone).join(", ");
+        navigator.clipboard.writeText(numbers);
+        alert("সব নম্বর কপি হয়েছে! হোয়াটসঅ্যাপ ব্রডকাস্ট লিস্টে পেস্ট করুন।");
+    }
+
+    function copyMatchMsg(id, time) {
+        let msg = `RS Arena: ম্যাচ #${id} শুরু হচ্ছে! সময়: ${time}। রুম আইডি: [আপনার আইডি], পাসওয়ার্ড: 1234। দ্রুত জয়েন করুন।`;
+        navigator.clipboard.writeText(msg);
+        alert("ম্যাচ #" + id + "-এর মেসেজ কপি হয়েছে!");
+    }
+</script>
+
+</body>
+</html>
